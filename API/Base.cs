@@ -1,16 +1,15 @@
-﻿using Advantech.Structure;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System;
 using System.Reflection;
 
-namespace Advantech
+namespace Sample
 {
     /// <summary>
-    /// 基礎物件結構
+    /// 基礎父項類別
     /// </summary>
-    public class Abject
+    public class Base
     {
-        // Abject 作為所有物件的最原始父層結構，僅提供最基礎屬性 ID + Name + Class Name 與介面屬性 Index + Type。
+        // Base 作為所有物件的最原始父層結構，僅提供最基礎屬性 ID + Name + Class Name 與介面屬性 Type。
         // Node：請注意屬性上 virtual/new/override 應用與差異。
         #region 屬性
         /// <summary>
@@ -43,15 +42,6 @@ namespace Advantech
         // 行為中依照使用經驗將各繼承子物件常用的方法收入該父層結構。
         #region 行為
         /// <summary>
-        /// 物件序列化成字串。
-        /// </summary>
-        /// <returns>JSON字串</returns>
-        public string ToJsonString()
-        {
-            return JsonConvert.SerializeObject(this);
-        }
-
-        /// <summary>
         /// 轉換物件
         /// </summary>
         /// <typeparam name="T">指定轉換物件</typeparam>
@@ -64,9 +54,38 @@ namespace Advantech
             }
             catch (Exception ex)
             {
-                APIExceptedEvent(MethodBase.GetCurrentMethod(), ex);
+                ExceptedEvent(MethodBase.GetCurrentMethod(), ex);
                 return default;
             }
+        }
+
+        /// <summary>
+        /// 判斷公開的屬性內是否有 Value 為 null or empty。
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public bool IsNullOrEmpty(object obj)
+        {
+            var p = obj.GetType().GetProperties();
+            foreach (var pi in obj.GetType().GetProperties())
+            {
+                if (pi.PropertyType == typeof(string))
+                {
+                    string value = (string)pi.GetValue(obj);
+                    if (string.IsNullOrEmpty(value))
+                    {
+                        return true;
+                    }
+                }
+                else
+                {
+                    if (pi.GetValue(obj) == null)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
         #endregion 行為
 
@@ -88,12 +107,15 @@ namespace Advantech
         /// </summary>
         /// <param name="MethodBase"></param>
         /// <param name="ex"></param>
-        protected internal static void APIExceptedEvent(MethodBase MethodBase, Exception ex)
+        protected internal static void ExceptedEvent(MethodBase MethodBase, Exception ex)
         {
             APIException?.Invoke(MethodBase, ex);
         }
         #endregion API 方法例外事件
     }
+
+
+
 
     #region 靜態擴充功能
     /// <summary>
@@ -105,16 +127,27 @@ namespace Advantech
         /// 深度複製物件
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="source"></param>
+        /// <param name="obj"></param>
         /// <returns></returns>
-        public static T CopyNew<T>(this T source)
+        public static T Clone<T>(this T obj)
         {
-            if (ReferenceEquals(source, null))
+            if (ReferenceEquals(obj, null))
             {
                 return default(T);
             }
             var deserializeSettings = new JsonSerializerSettings { ObjectCreationHandling = ObjectCreationHandling.Replace };
-            return JsonConvert.DeserializeObject<T>(JsonConvert.SerializeObject(source), deserializeSettings);
+            return JsonConvert.DeserializeObject<T>(JsonConvert.SerializeObject(obj), deserializeSettings);
+        }
+
+        /// <summary>
+        /// 物件序列化成字串。
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public static string ToJsonString<T>(this T obj)
+        {
+            return JsonConvert.SerializeObject(obj);
         }
     }
     #endregion 靜態擴充功能

@@ -2,15 +2,15 @@
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-using Advantech;
 using System.Reflection;
+using Sample;
 
-namespace Advantech.Sample
+namespace Advantech
 {
     /// <summary>
     /// 工單
     /// </summary>
-    public class WIP : Abject
+    public class WIP : Base
     {
         #region 屬性
         /// <summary>
@@ -24,7 +24,7 @@ namespace Advantech.Sample
         /// <summary>
         /// 類別
         /// </summary>
-        public new Abject Type; // 實作介面
+        public new Base Type; // 實作介面
 
         /// <summary>
         /// 生產計劃
@@ -66,7 +66,7 @@ namespace Advantech.Sample
             {
                 if (!string.IsNullOrEmpty(ID))
                 {
-                    using (var con = Database.MSSQL.ReadyOnly())
+                    using (var con = Sample.Server.MSSQL.ReadyOnly())
                     {
                         con.Open();
                         string str = $@"Select TOP 1 t.WIP_ID, t.WIP_NO, t2.ITEM_NO, t.PLAN_QTY, t.WERKS, 
@@ -104,7 +104,7 @@ namespace Advantech.Sample
             }
             catch (Exception ex)
             {
-                Abject.APIExceptedEvent(MethodBase.GetCurrentMethod(), ex);
+                Base.ExceptedEvent(MethodBase.GetCurrentMethod(), ex);
                 return null;
             }
         }
@@ -127,7 +127,7 @@ namespace Advantech.Sample
         {
             try
             {
-                using (var con = Database.MSSQL.Connect())
+                using (var con = Sample.Server.MSSQL.Writing())
                 {
                     con.Open();
                     string str = $@"";
@@ -143,7 +143,7 @@ namespace Advantech.Sample
             }
             catch (Exception ex)
             {
-                Abject.APIExceptedEvent(MethodBase.GetCurrentMethod(), ex);
+                Base.ExceptedEvent(MethodBase.GetCurrentMethod(), ex);
                 return false;
             }
         }
@@ -161,7 +161,7 @@ namespace Advantech.Sample
                 List<Product> list = new List<Product>();
                 if (!string.IsNullOrEmpty(ID))
                 {
-                    using (var con = Database.MSSQL.ReadyOnly())
+                    using (var con = Sample.Server.MSSQL.ReadyOnly())
                     {
                         con.Open();
                         string str = $@"Select t2.* From
@@ -184,7 +184,7 @@ namespace Advantech.Sample
             }
             catch (Exception ex)
             {
-                Abject.APIExceptedEvent(MethodBase.GetCurrentMethod(), ex);
+                Base.ExceptedEvent(MethodBase.GetCurrentMethod(), ex);
                 return null;
             }
         }
@@ -209,7 +209,7 @@ namespace Advantech.Sample
     /// <summary>
     /// 成品/產品
     /// </summary>
-    public class Product : Abject
+    public class Product : Base
     {
         #region 屬性
         /// <summary>
@@ -223,7 +223,7 @@ namespace Advantech.Sample
         /// <summary>
         /// 類別
         /// </summary>
-        public new Abject Type;
+        public new Base Type;
 
         /// <summary>
         /// 狀態
@@ -264,7 +264,7 @@ namespace Advantech.Sample
             {
                 if (!string.IsNullOrEmpty(ID))
                 {
-                    using (var con = Database.MSSQL.ReadyOnly())
+                    using (var con = Sample.Server.MSSQL.ReadyOnly())
                     {
                         con.Open();
                         string str = $@"SELECT * FROM [M9_MESDB].[MES].[BARCODE_INFO] 
@@ -282,7 +282,7 @@ namespace Advantech.Sample
             }
             catch (Exception ex)
             {
-                Abject.APIExceptedEvent(MethodBase.GetCurrentMethod(), ex);
+                Base.ExceptedEvent(MethodBase.GetCurrentMethod(), ex);
                 return null;
             }
         }
