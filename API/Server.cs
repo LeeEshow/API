@@ -393,30 +393,6 @@ namespace API
             #endregion 行為
         }
 
-        /// <summary>
-        /// FTP 連線操作
-        /// </summary>
-        public static class FTP
-        {
-            #region 屬性
-            private static string _URL { get; set; }
-
-            private static string _ID { get; set; }
-
-            private static string _Password { get; set; }
-
-            private static FtpWebRequest ftp = null;
-            #endregion 屬性
-
-
-
-
-
-
-
-        }
-
-
     }
 
 }

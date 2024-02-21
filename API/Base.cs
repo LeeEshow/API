@@ -21,12 +21,12 @@ namespace API
         /// </summary>
         public virtual string Name { get; set; }
         /// <summary>
-        /// 物件分類
+        /// 物件類別，介面屬性繼承時必須實作。
         /// </summary>
         public interface Type { }
 
         /// <summary>
-        /// 完整類別名稱，唯獨。
+        /// 類型完整名稱，唯獨。
         /// </summary>
         public string Class => this.GetType().FullName;
         #endregion 屬性
