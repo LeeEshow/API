@@ -2,7 +2,7 @@
 using System;
 using System.Reflection;
 
-namespace Sample
+namespace API
 {
     /// <summary>
     /// 基礎父項類別
@@ -28,15 +28,8 @@ namespace Sample
         /// <summary>
         /// 完整類別名稱，唯獨。
         /// </summary>
-        public string Class_Name
-        {
-            get
-            {
-                return this.GetType().FullName;
-            }
-        }
+        public string Class => this.GetType().FullName;
         #endregion 屬性
-
 
 
         // 行為中依照使用經驗將各繼承子物件常用的方法收入該父層結構。
@@ -54,24 +47,23 @@ namespace Sample
             }
             catch (Exception ex)
             {
-                ExceptedEvent(MethodBase.GetCurrentMethod(), ex);
+                APIExcepted(MethodBase.GetCurrentMethod(), ex);
                 return default;
             }
         }
 
         /// <summary>
-        /// 判斷公開的屬性內是否有 Value 為 null or empty。
+        /// 判斷公開的【屬性】內是否有 Value 為 null or empty。
         /// </summary>
-        /// <param name="obj"></param>
         /// <returns></returns>
-        public bool IsNullOrEmpty(object obj)
+        public bool IsNullOrEmpty()
         {
-            var p = obj.GetType().GetProperties();
-            foreach (var pi in obj.GetType().GetProperties())
+            var p = this.GetType().GetProperties();
+            foreach (var pi in this.GetType().GetProperties())
             {
                 if (pi.PropertyType == typeof(string))
                 {
-                    string value = (string)pi.GetValue(obj);
+                    string value = (string)pi.GetValue(this);
                     if (string.IsNullOrEmpty(value))
                     {
                         return true;
@@ -79,7 +71,7 @@ namespace Sample
                 }
                 else
                 {
-                    if (pi.GetValue(obj) == null)
+                    if (pi.GetValue(this) == null)
                     {
                         return true;
                     }
@@ -107,14 +99,12 @@ namespace Sample
         /// </summary>
         /// <param name="MethodBase"></param>
         /// <param name="ex"></param>
-        protected internal static void ExceptedEvent(MethodBase MethodBase, Exception ex)
+        protected internal static void APIExcepted(MethodBase MethodBase, Exception ex)
         {
             APIException?.Invoke(MethodBase, ex);
         }
         #endregion API 方法例外事件
     }
-
-
 
 
     #region 靜態擴充功能
@@ -124,7 +114,7 @@ namespace Sample
     public static class ExtensiveMethod
     {
         /// <summary>
-        /// 深度複製物件
+        /// 靜態擴充，深度複製物件
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="obj"></param>
@@ -140,7 +130,7 @@ namespace Sample
         }
 
         /// <summary>
-        /// 物件序列化成字串。
+        /// 靜態擴充，物件序列化成字串。
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="obj"></param>
