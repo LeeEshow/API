@@ -105,41 +105,4 @@ namespace API
         }
         #endregion API 方法例外事件
     }
-
-
-    #region 靜態擴充功能
-    /// <summary>
-    /// 靜態擴充功能
-    /// </summary>
-    public static class ExtensiveMethod
-    {
-        /// <summary>
-        /// 靜態擴充，深度複製物件
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="obj"></param>
-        /// <returns></returns>
-        public static T Clone<T>(this T obj)
-        {
-            if (ReferenceEquals(obj, null))
-            {
-                return default(T);
-            }
-            var deserializeSettings = new JsonSerializerSettings { ObjectCreationHandling = ObjectCreationHandling.Replace };
-            return JsonConvert.DeserializeObject<T>(JsonConvert.SerializeObject(obj), deserializeSettings);
-        }
-
-        /// <summary>
-        /// 靜態擴充，物件序列化成字串。
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="obj"></param>
-        /// <returns></returns>
-        public static string ToJsonString<T>(this T obj)
-        {
-            return JsonConvert.SerializeObject(obj);
-        }
-    }
-    #endregion 靜態擴充功能
-
 }
