@@ -72,10 +72,10 @@ namespace API
             }
 
             /// <summary>
-            /// 建立 SQL 唯讀連線
+            /// 建立 SQL 唯讀連線，
             /// </summary>
             /// <returns></returns>
-            public static SqlConnection ReadyOnly()
+            internal static SqlConnection ReadyOnly()
             {
                 try
                 {
@@ -95,7 +95,7 @@ namespace API
             /// 建立 SQL 操作連線(讀/寫)，未實做!!
             /// </summary>
             /// <returns></returns>
-            public static SqlConnection Writing()
+            public static SqlConnection Connecting()
             {
                 try
                 {

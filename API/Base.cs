@@ -7,7 +7,7 @@ namespace API
     /// <summary>
     /// 基礎父項類別
     /// </summary>
-    public class Base
+    public class Base : VirtualModle
     {
         // Base 作為所有物件的最原始父層結構，僅提供最基礎屬性 ID + Name + Class Name 與介面屬性 Type。
         // Node：請注意屬性上 virtual/new/override 應用與差異。
@@ -23,12 +23,12 @@ namespace API
         /// <summary>
         /// 物件類別，介面屬性繼承時必須實作。
         /// </summary>
-        public interface Type { }
+        public virtual object Type { get; set; }
 
         /// <summary>
         /// 類型完整名稱，唯獨。
         /// </summary>
-        public string Class => this.GetType().FullName;
+        sealed public override string Class => this.GetType().FullName;
         #endregion 屬性
 
 
@@ -105,4 +105,17 @@ namespace API
         }
         #endregion API 方法例外事件
     }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public class VirtualModle
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        public virtual string Class { get; }
+    }
+
+    
 }
