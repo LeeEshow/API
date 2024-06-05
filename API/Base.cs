@@ -1,13 +1,14 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Reflection;
+using API.Base;
 
 namespace API
 {
     /// <summary>
     /// 基礎父項類別
     /// </summary>
-    public class Base : VirtualModle
+    public class Model : VirtualModel
     {
         // Base 作為所有物件的最原始父層結構，僅提供最基礎屬性 ID + Name + Class Name 與介面屬性 Type。
         // Node：請注意屬性上 virtual/new/override 應用與差異。
@@ -28,7 +29,7 @@ namespace API
         /// <summary>
         /// 類型完整名稱，唯獨。
         /// </summary>
-        sealed public override string Class => this.GetType().FullName;
+        public sealed override string Class => this.GetType().FullName;
         #endregion 屬性
 
 
@@ -105,17 +106,20 @@ namespace API
         }
         #endregion API 方法例外事件
     }
+}
 
+namespace API.Base
+{
     /// <summary>
     /// 
     /// </summary>
-    public class VirtualModle
+    public class VirtualModel
     {
         /// <summary>
         /// 
         /// </summary>
-        public virtual string Class { get; }
+        public virtual string Class { get; set; }
+
     }
 
-    
 }

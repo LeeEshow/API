@@ -8,7 +8,7 @@ namespace API
     /// <summary>
     /// 繼承範例
     /// </summary>
-    public class Sample : Base
+    public class Sample : Model
     {
         #region 屬性
         /// <summary>
@@ -22,7 +22,8 @@ namespace API
         /// <summary>
         /// 類別
         /// </summary>
-        public new Base Type;
+        public new Model Type { get; set; }
+
         /// <summary>
         /// ???
         /// </summary>
@@ -76,7 +77,7 @@ namespace API
             }
             catch (Exception ex)
             {
-                Base.APIExcepted(MethodBase.GetCurrentMethod(), ex);
+                Model.APIExcepted(MethodBase.GetCurrentMethod(), ex);
                 return null;
             }
         }
@@ -100,7 +101,6 @@ namespace API
             this.WIP_ID = reader["WIP_ID"].ToString();
             this.Create_Date = DateTime.Parse(reader["CREATE_DATE"].ToString());
             this.Update_Date = DateTime.Parse(reader["UPDATE_DATE"].ToString());
-
             return this;
         }
 
@@ -128,7 +128,7 @@ namespace API
             }
             catch (Exception ex)
             {
-                Base.APIExcepted(MethodBase.GetCurrentMethod(), ex);
+                Model.APIExcepted(MethodBase.GetCurrentMethod(), ex);
                 return false;
             }
         }
