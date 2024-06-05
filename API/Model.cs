@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Reflection;
-using API.Base;
+using API.Struct;
 
 namespace API
 {
@@ -108,7 +108,7 @@ namespace API
     }
 }
 
-namespace API.Base
+namespace API.Struct
 {
     /// <summary>
     /// 
