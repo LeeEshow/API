@@ -72,7 +72,7 @@ namespace API
             }
 
             /// <summary>
-            /// 建立 SQL 唯讀連線，
+            /// 建立 SQL 唯讀連線
             /// </summary>
             /// <returns></returns>
             internal static SqlConnection ReadyOnly()
@@ -92,7 +92,7 @@ namespace API
                 }
             }
             /// <summary>
-            /// 建立 SQL 操作連線(讀/寫)，未實做!!
+            /// 建立 SQL 操作連線(讀/寫)
             /// </summary>
             /// <returns></returns>
             public static SqlConnection Connecting()

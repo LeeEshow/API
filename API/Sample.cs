@@ -22,33 +22,78 @@ namespace API
         /// <summary>
         /// 類別
         /// </summary>
-        public new Model Type { get; set; }
+        public new Model Type { get; set; } = null;
 
         /// <summary>
         /// ???
         /// </summary>
-        public string Extra_Barcode;
-        /// <summary>
-        /// ???
-        /// </summary>
-        public string Rule_Station;
-        /// <summary>
-        /// 工單號碼
-        /// </summary>
-        public string WIP_ID;
-
-        /// <summary>
-        /// 工單建立時間
-        /// </summary>
-        public DateTime Create_Date;
-        /// <summary>
-        /// 工單更新時間
-        /// </summary>
-        public DateTime Update_Date;
+        public string Data { get; set; }
         #endregion 屬性
 
 
         #region 行為
+
+        #region 編輯
+        /// <summary>
+        /// 註冊資料
+        /// </summary>
+        /// <returns></returns>
+        public bool Registered()
+        {
+            try
+            {
+                using (var con = API.Server.MSSQL.Connecting())
+                {
+                    con.Open();
+                    string str = $@"Insert into ....";
+
+                    var cmd = new SqlCommand(str, con);
+                    var Qty = cmd.ExecuteNonQuery();
+                    if (Qty > 0)
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Model.APIExcepted(MethodBase.GetCurrentMethod(), ex);
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// 更新資料
+        /// </summary>
+        /// <returns></returns>
+        public bool Update()
+        {
+            try
+            {
+                using (var con = API.Server.MSSQL.Connecting())
+                {
+                    con.Open();
+                    string str = $@"Update ....";
+
+                    var cmd = new SqlCommand(str, con);
+                    var Qty = cmd.ExecuteNonQuery();
+                    if (Qty > 0)
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Model.APIExcepted(MethodBase.GetCurrentMethod(), ex);
+                return false;
+            }
+        }
+        #endregion 編輯
+
+        #region Find
         /// <summary>
         /// 取得資訊
         /// </summary>
@@ -62,8 +107,7 @@ namespace API
                     using (var con = API.Server.MSSQL.ReadyOnly())
                     {
                         con.Open();
-                        string str = $@"SELECT * FROM TABLE
-                                        where BARCODE_NO = '{this.ID}'";
+                        string str = $@"SELECT * FROM ...";
 
                         var cmd = new SqlCommand(str, con);
                         var reader = cmd.ExecuteReader();
@@ -94,44 +138,12 @@ namespace API
 
         internal Sample Reading(SqlDataReader reader)
         {
-            this.ID = reader["BARCODE_NO"].ToString();
+            this.ID = reader["BARCODE"].ToString();
             this.Name = "XXX 產品";
-            this.Extra_Barcode = reader["EXTRA_BARCODE_NO"].ToString();
-            this.Rule_Station = reader["RULE_STATION_ID"].ToString();
-            this.WIP_ID = reader["WIP_ID"].ToString();
-            this.Create_Date = DateTime.Parse(reader["CREATE_DATE"].ToString());
-            this.Update_Date = DateTime.Parse(reader["UPDATE_DATE"].ToString());
+            this.Data = reader["Data"].ToString();
             return this;
         }
-
-        /// <summary>
-        /// 存入資料
-        /// </summary>
-        /// <returns></returns>
-        public bool Insert()
-        {
-            try
-            {
-                using (var con = API.Server.MSSQL.Connecting())
-                {
-                    con.Open();
-                    string str = $@"Insert into ....";
-
-                    var cmd = new SqlCommand(str, con);
-                    var Qty = cmd.ExecuteNonQuery();
-                    if (Qty > 0)
-                    {
-                        return true;
-                    }
-                }
-                return false;
-            }
-            catch (Exception ex)
-            {
-                Model.APIExcepted(MethodBase.GetCurrentMethod(), ex);
-                return false;
-            }
-        }
+        #endregion Find
 
         #endregion 行為
     }
