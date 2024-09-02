@@ -323,9 +323,9 @@ namespace API
             }
 
             #region 使用範例
-            private static readonly string Def_Path = @"192.168.10.218";
+            private static readonly string Def_Path = @"127.0.0.2";
             /// <summary>
-            /// 將檔案由記憶體中存入 218 路徑
+            /// 將檔案由記憶體中存入指定路徑
             /// </summary>
             /// <param name="Save_Path"></param>
             /// <param name="Stream"></param>
@@ -363,7 +363,7 @@ namespace API
             }
 
             /// <summary>
-            /// 取得 218 路徑的指定路徑檔案
+            /// 取得路徑的指定路徑檔案
             /// </summary>
             /// <param name="File_Path"></param>
             /// <returns></returns>
