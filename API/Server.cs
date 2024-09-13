@@ -14,28 +14,6 @@ namespace API
     /// </summary>
     public static class Server
     {
-        #region Server 方法例外事件
-        /// <summary>
-        /// 委派事件
-        /// </summary>
-        /// <param name="MethodBase">例外內容</param>
-        /// <param name="ex">例外內容</param>
-        public delegate void ServerMethodException(MethodBase MethodBase, Exception ex);
-        /// <summary>
-        /// Server 例外事件。
-        /// </summary>
-        public static event ServerMethodException ServerException;
-        /// <summary>
-        /// 規範所有 Server 行為/方法發生例外狀況必須觸發該事件。
-        /// </summary>
-        /// <param name="MethodBase"></param>
-        /// <param name="ex"></param>
-        private static void ServerExcepted(MethodBase MethodBase, Exception ex)
-        {
-            ServerException?.Invoke(MethodBase, ex);
-        }
-        #endregion Server 方法例外事件
-
         /// <summary>
         /// SQL Server 連線操作
         /// </summary>
@@ -87,7 +65,7 @@ namespace API
                 }
                 catch (Exception ex)
                 {
-                    ServerExcepted(MethodBase.GetCurrentMethod(), ex);
+                    Model.APIExcepted(MethodBase.GetCurrentMethod(), ex);
                     return null;
                 }
             }
@@ -106,7 +84,7 @@ namespace API
                 }
                 catch (Exception ex)
                 {
-                    ServerExcepted(MethodBase.GetCurrentMethod(), ex);
+                    Model.APIExcepted(MethodBase.GetCurrentMethod(), ex);
                     return null;
                 }
             }
@@ -126,7 +104,7 @@ namespace API
                 }
                 catch (Exception ex)
                 {
-                    ServerExcepted(MethodBase.GetCurrentMethod(), ex);
+                    Model.APIExcepted(MethodBase.GetCurrentMethod(), ex);
                     return false;
                 }
             }
@@ -187,7 +165,7 @@ namespace API
                 }
                 catch (Exception ex)
                 {
-                    ServerExcepted(MethodBase.GetCurrentMethod(), ex);
+                    Model.APIExcepted(MethodBase.GetCurrentMethod(), ex);
                     return null;
                 }
             }
@@ -208,7 +186,7 @@ namespace API
                 }
                 catch (Exception ex)
                 {
-                    ServerExcepted(MethodBase.GetCurrentMethod(), ex);
+                    Model.APIExcepted(MethodBase.GetCurrentMethod(), ex);
                     return false;
                 }
             }
@@ -317,7 +295,7 @@ namespace API
                 }
                 catch (Exception ex)
                 {
-                    ServerExcepted(MethodBase.GetCurrentMethod(), ex);
+                    Model.APIExcepted(MethodBase.GetCurrentMethod(), ex);
                     return null;
                 }
             }
@@ -357,7 +335,7 @@ namespace API
                 }
                 catch (Exception ex)
                 {
-                    ServerExcepted(MethodBase.GetCurrentMethod(), ex);
+                    Model.APIExcepted(MethodBase.GetCurrentMethod(), ex);
                     return false;
                 }
             }
@@ -384,7 +362,7 @@ namespace API
                 }
                 catch (Exception ex)
                 {
-                    ServerExcepted(MethodBase.GetCurrentMethod(), ex);
+                    Model.APIExcepted(MethodBase.GetCurrentMethod(), ex);
                     return null;
                 }
             }

@@ -5,6 +5,7 @@ using API.Struct;
 
 namespace API
 {
+
     /// <summary>
     /// 基礎父項類別
     /// </summary>
@@ -84,13 +85,7 @@ namespace API
 
 
         // 該事件處理所有物件 API 內方法例外統一回報窗口。因此規範所有必要方法處理時必須使用 try/catch，範例：
-        #region API 方法例外事件
-        /// <summary>
-        /// 委派事件
-        /// </summary>
-        /// <param name="MethodBase">例外內容</param>
-        /// <param name="ex">例外內容</param>
-        public delegate void APIMethodException(MethodBase MethodBase, Exception ex);
+        #region API 方法例外事件       
         /// <summary>
         /// API 例外事件。
         /// </summary>
@@ -119,7 +114,12 @@ namespace API.Struct
         /// 
         /// </summary>
         public virtual string Class { get; set; }
-
     }
 
+    /// <summary>
+    /// 委派事件
+    /// </summary>
+    /// <param name="MethodBase">例外內容</param>
+    /// <param name="ex">例外內容</param>
+    public delegate void APIMethodException(MethodBase MethodBase, Exception ex);
 }
