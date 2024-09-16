@@ -22,7 +22,7 @@ namespace API
         /// <summary>
         /// 類別
         /// </summary>
-        public new Model Type { get; set; } = null;
+        public override object Type { get; set; } = null;
 
         /// <summary>
         /// ???

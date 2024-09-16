@@ -9,7 +9,7 @@ namespace API
     /// <summary>
     /// 基礎父項類別
     /// </summary>
-    public class Model : VirtualModel
+    public abstract class Model : VirtualModel
     {
         // Base 作為所有物件的最原始父層結構，僅提供最基礎屬性 ID + Name + Class Name 與介面屬性 Type。
         // Node：請注意屬性上 virtual/new/override 應用與差異。
@@ -23,9 +23,9 @@ namespace API
         /// </summary>
         public virtual string Name { get; set; }
         /// <summary>
-        /// 物件類別，介面屬性繼承時必須實作。
+        /// 物件類別，抽象屬性繼承時必須實作。
         /// </summary>
-        public virtual object Type { get; set; }
+        public abstract object Type { get; set; }
 
         /// <summary>
         /// 類型完整名稱，唯獨。
