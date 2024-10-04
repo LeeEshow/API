@@ -9,7 +9,7 @@ namespace API
     /// <summary>
     /// 基礎父項類別
     /// </summary>
-    public abstract class Model : VirtualModel
+    public abstract class Model : BaseModel
     {
         // Base 作為所有物件的最原始父層結構，僅提供最基礎屬性 ID + Name + Class Name 與介面屬性 Type。
         // Node：請注意屬性上 virtual/new/override 應用與差異。
@@ -60,12 +60,15 @@ namespace API
         /// <returns></returns>
         public bool IsNullOrEmpty()
         {
-            var p = this.GetType().GetProperties();
-            foreach (var pi in this.GetType().GetProperties())
+            if (this == null)
             {
-                if (pi.PropertyType == typeof(string))
+                return true;
+            }
+            foreach (var prop in this.GetType().GetProperties())
+            {
+                if (prop.PropertyType == typeof(string))
                 {
-                    string value = (string)pi.GetValue(this);
+                    string value = (string)prop.GetValue(this);
                     if (string.IsNullOrEmpty(value))
                     {
                         return true;
@@ -73,7 +76,7 @@ namespace API
                 }
                 else
                 {
-                    if (pi.GetValue(this) == null)
+                    if (prop.GetValue(this) == null)
                     {
                         return true;
                     }
@@ -108,12 +111,14 @@ namespace API.Struct
     /// <summary>
     /// 
     /// </summary>
-    public class VirtualModel
+    public class BaseModel
     {
         /// <summary>
         /// 
         /// </summary>
         public virtual string Class { get; set; }
+
+
     }
 
     /// <summary>
