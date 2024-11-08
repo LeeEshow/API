@@ -5,7 +5,6 @@ using API.Struct;
 
 namespace API
 {
-
     /// <summary>
     /// 基礎父項類別
     /// </summary>
