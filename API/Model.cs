@@ -6,12 +6,12 @@ using API.Struct;
 namespace API
 {
     /// <summary>
-    /// 基礎父項類別
+    /// 基礎父項類別 (泛型版)
+    /// 提供所有物件的基本結構與共用方法，並透過泛型確保子類別回傳正確型別。
     /// </summary>
-    public abstract class Model : BaseModel
+    /// <typeparam name="T">子類別型別，必須繼承 <see cref="Model{T}"/>，且具備無參數建構子</typeparam>
+    public abstract class Model<T> : BaseModel, IBaseMethod<T> where T : Model<T>, new()
     {
-        // Base 作為所有物件的最原始父層結構，僅提供最基礎屬性 ID + Name + Class Name 與介面屬性 Type。
-        // Node：請注意屬性上 virtual/new/override 應用與差異。
         #region 屬性
         /// <summary>
         /// 物件識別碼
@@ -33,28 +33,15 @@ namespace API
         #endregion 屬性
 
 
-        // 行為中依照使用經驗將各繼承子物件常用的方法收入該父層結構。
         #region 行為
         /// <summary>
-        /// 轉換物件
+        /// 查詢或建立物件的方法，由子類別實作。
         /// </summary>
-        /// <typeparam name="T">指定轉換物件</typeparam>
-        /// <returns>指定轉換物件</returns>
-        public T ConvertTo<T>()
-        {
-            try
-            {
-                return JsonConvert.DeserializeObject<T>(JsonConvert.SerializeObject(this));
-            }
-            catch (Exception ex)
-            {
-                APIExcepted(MethodBase.GetCurrentMethod(), ex);
-                return default;
-            }
-        }
+        /// <returns>回傳子類別物件</returns>
+        public abstract T Find();
 
         /// <summary>
-        /// 判斷公開的【屬性】內是否有 Value 為 null or empty。
+        /// 檢查目前物件的公開屬性是否包含 null 或空字串。
         /// </summary>
         /// <returns></returns>
         public bool IsNullOrEmpty()
@@ -84,46 +71,56 @@ namespace API
             return false;
         }
         #endregion 行為
-
-
-        // 該事件處理所有物件 API 內方法例外統一回報窗口。因此規範所有必要方法處理時必須使用 try/catch，範例：
-        #region API 方法例外事件       
-        /// <summary>
-        /// API 例外事件。
-        /// </summary>
-        public static event APIMethodException APIException;
-        /// <summary>
-        /// 規範所有 API 行為/方法發生例外狀況必須觸發該事件。
-        /// </summary>
-        /// <param name="MethodBase"></param>
-        /// <param name="ex"></param>
-        protected internal static void APIExcepted(MethodBase MethodBase, Exception ex)
-        {
-            APIException?.Invoke(MethodBase, ex);
-        }
-        #endregion API 方法例外事件
     }
 }
 
 namespace API.Struct
 {
     /// <summary>
-    /// 
+    /// 基礎模型，提供類別完整名稱的唯讀屬性。
     /// </summary>
     public class BaseModel
     {
         /// <summary>
-        /// 
+        /// 類型完整名稱
         /// </summary>
-        public virtual string Class { get; set; }
+        public virtual string Class => GetType().FullName;
 
-
+        #region API 方法例外事件       
+        /// <summary>
+        /// API 例外事件。當方法發生例外時會被觸發。
+        /// </summary>
+        public static event APIMethodException APIException;
+        /// <summary>
+        /// 觸發 API 例外事件，統一回報例外狀況。
+        /// </summary>
+        /// <param name="MethodBase">發生例外的方法資訊</param>
+        /// <param name="ex">例外內容</param>
+        protected internal static void APIExcepted(MethodBase MethodBase, Exception ex)
+        {
+            APIException?.Invoke(MethodBase, ex);
+        }
+        #endregion API 方法例外事件
     }
 
     /// <summary>
-    /// 委派事件
+    /// 定義基本方法介面。
     /// </summary>
-    /// <param name="MethodBase">例外內容</param>
+    /// <typeparam name="T">回傳的型別</typeparam>
+    public interface IBaseMethod<T>
+    {
+        /// <summary>
+        /// 查詢或建立物件的方法。
+        /// </summary>
+        /// <returns>指定型別的物件</returns>
+        T Find();
+    }
+
+
+    /// <summary>
+    /// 委派事件：用於 API 方法發生例外時的通知。
+    /// </summary>
+    /// <param name="MethodBase">例外發生的方法</param>
     /// <param name="ex">例外內容</param>
     public delegate void APIMethodException(MethodBase MethodBase, Exception ex);
 }

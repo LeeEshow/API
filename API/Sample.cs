@@ -7,7 +7,7 @@ namespace API
     /// <summary>
     /// 繼承範例
     /// </summary>
-    public class Sample : Model
+    public class Sample : Model<Sample>
     {
         #region 屬性
         /// <summary>
@@ -57,7 +57,7 @@ namespace API
             }
             catch (Exception ex)
             {
-                Model.APIExcepted(MethodBase.GetCurrentMethod(), ex);
+                APIExcepted(MethodBase.GetCurrentMethod(), ex);
                 return false;
             }
         }
@@ -86,7 +86,7 @@ namespace API
             }
             catch (Exception ex)
             {
-                Model.APIExcepted(MethodBase.GetCurrentMethod(), ex);
+                APIExcepted(MethodBase.GetCurrentMethod(), ex);
                 return false;
             }
         }
@@ -97,7 +97,7 @@ namespace API
         /// 取得資訊
         /// </summary>
         /// <returns></returns>
-        public Sample Find()
+        public override Sample Find()
         {
             try
             {
@@ -120,7 +120,7 @@ namespace API
             }
             catch (Exception ex)
             {
-                Model.APIExcepted(MethodBase.GetCurrentMethod(), ex);
+                APIExcepted(MethodBase.GetCurrentMethod(), ex);
                 return null;
             }
         }

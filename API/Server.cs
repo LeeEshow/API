@@ -1,4 +1,5 @@
-﻿using MySql.Data.MySqlClient;
+﻿using API.Struct;
+using MySql.Data.MySqlClient;
 using System;
 using System.Data.SqlClient;
 using System.IO;
@@ -65,7 +66,7 @@ namespace API
                 }
                 catch (Exception ex)
                 {
-                    Model.APIExcepted(MethodBase.GetCurrentMethod(), ex);
+                    BaseModel.APIExcepted(MethodBase.GetCurrentMethod(), ex);
                     return null;
                 }
             }
@@ -84,7 +85,7 @@ namespace API
                 }
                 catch (Exception ex)
                 {
-                    Model.APIExcepted(MethodBase.GetCurrentMethod(), ex);
+                    BaseModel.APIExcepted(MethodBase.GetCurrentMethod(), ex);
                     return null;
                 }
             }
@@ -104,7 +105,7 @@ namespace API
                 }
                 catch (Exception ex)
                 {
-                    Model.APIExcepted(MethodBase.GetCurrentMethod(), ex);
+                    BaseModel.APIExcepted(MethodBase.GetCurrentMethod(), ex);
                     return false;
                 }
             }
@@ -165,7 +166,7 @@ namespace API
                 }
                 catch (Exception ex)
                 {
-                    Model.APIExcepted(MethodBase.GetCurrentMethod(), ex);
+                    BaseModel.APIExcepted(MethodBase.GetCurrentMethod(), ex);
                     return null;
                 }
             }
@@ -186,7 +187,7 @@ namespace API
                 }
                 catch (Exception ex)
                 {
-                    Model.APIExcepted(MethodBase.GetCurrentMethod(), ex);
+                    BaseModel.APIExcepted(MethodBase.GetCurrentMethod(), ex);
                     return false;
                 }
             }
@@ -295,7 +296,7 @@ namespace API
                 }
                 catch (Exception ex)
                 {
-                    Model.APIExcepted(MethodBase.GetCurrentMethod(), ex);
+                    BaseModel.APIExcepted(MethodBase.GetCurrentMethod(), ex);
                     return null;
                 }
             }
@@ -335,7 +336,7 @@ namespace API
                 }
                 catch (Exception ex)
                 {
-                    Model.APIExcepted(MethodBase.GetCurrentMethod(), ex);
+                    BaseModel.APIExcepted(MethodBase.GetCurrentMethod(), ex);
                     return false;
                 }
             }
@@ -362,7 +363,7 @@ namespace API
                 }
                 catch (Exception ex)
                 {
-                    Model.APIExcepted(MethodBase.GetCurrentMethod(), ex);
+                    BaseModel.APIExcepted(MethodBase.GetCurrentMethod(), ex);
                     return null;
                 }
             }
