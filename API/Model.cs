@@ -1,7 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿using API.Struct;
 using System;
 using System.Reflection;
-using API.Struct;
 
 namespace API
 {
@@ -10,6 +9,7 @@ namespace API
     /// 提供所有物件的基本結構與共用方法，並透過泛型確保子類別回傳正確型別。
     /// </summary>
     /// <typeparam name="T">子類別型別，必須繼承 <see cref="Model{T}"/>，且具備無參數建構子</typeparam>
+    [IgnoreNulls]
     public abstract class Model<T> : BaseModel, IBaseMethod<T> where T : Model<T>, new()
     {
         #region 屬性
@@ -39,43 +39,13 @@ namespace API
         /// </summary>
         /// <returns>回傳子類別物件</returns>
         public abstract T Find();
-
-        /// <summary>
-        /// 檢查目前物件的公開屬性是否包含 null 或空字串。
-        /// </summary>
-        /// <returns></returns>
-        public bool IsNullOrEmpty()
-        {
-            if (this == null)
-            {
-                return true;
-            }
-            foreach (var prop in this.GetType().GetProperties())
-            {
-                if (prop.PropertyType == typeof(string))
-                {
-                    string value = (string)prop.GetValue(this);
-                    if (string.IsNullOrEmpty(value))
-                    {
-                        return true;
-                    }
-                }
-                else
-                {
-                    if (prop.GetValue(this) == null)
-                    {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
         #endregion 行為
     }
 }
 
 namespace API.Struct
 {
+    #region BaseModel/IBaseMethod
     /// <summary>
     /// 基礎模型，提供類別完整名稱的唯讀屬性。
     /// </summary>
@@ -115,7 +85,7 @@ namespace API.Struct
         /// <returns>指定型別的物件</returns>
         T Find();
     }
-
+    #endregion BaseModel/IBaseMethod
 
     /// <summary>
     /// 委派事件：用於 API 方法發生例外時的通知。
