@@ -2,7 +2,7 @@
 using System.Data.SqlClient;
 using System.Reflection;
 
-namespace API
+namespace API.Model
 {
     /// <summary>
     /// 繼承範例
@@ -39,27 +39,19 @@ namespace API
         /// <returns></returns>
         public bool Registered()
         {
-            try
+            using (var con = API.Server.MSSQL.Connecting())
             {
-                using (var con = API.Server.MSSQL.Connecting())
-                {
-                    con.Open();
-                    string str = $@"Insert into ....";
+                con.Open();
+                string str = $@"Insert into ....";
 
-                    var cmd = new SqlCommand(str, con);
-                    var Qty = cmd.ExecuteNonQuery();
-                    if (Qty > 0)
-                    {
-                        return true;
-                    }
+                var cmd = new SqlCommand(str, con);
+                var Qty = cmd.ExecuteNonQuery();
+                if (Qty > 0)
+                {
+                    return true;
                 }
-                return false;
             }
-            catch (Exception ex)
-            {
-                APIExcepted(MethodBase.GetCurrentMethod(), ex);
-                return false;
-            }
+            return false;
         }
 
         /// <summary>
@@ -68,27 +60,19 @@ namespace API
         /// <returns></returns>
         public bool Update()
         {
-            try
+            using (var con = API.Server.MSSQL.Connecting())
             {
-                using (var con = API.Server.MSSQL.Connecting())
-                {
-                    con.Open();
-                    string str = $@"Update ....";
+                con.Open();
+                string str = $@"Update ....";
 
-                    var cmd = new SqlCommand(str, con);
-                    var Qty = cmd.ExecuteNonQuery();
-                    if (Qty > 0)
-                    {
-                        return true;
-                    }
+                var cmd = new SqlCommand(str, con);
+                var Qty = cmd.ExecuteNonQuery();
+                if (Qty > 0)
+                {
+                    return true;
                 }
-                return false;
             }
-            catch (Exception ex)
-            {
-                APIExcepted(MethodBase.GetCurrentMethod(), ex);
-                return false;
-            }
+            return false;
         }
         #endregion 編輯
 
@@ -99,30 +83,22 @@ namespace API
         /// <returns></returns>
         public override Sample Find()
         {
-            try
+            if (!string.IsNullOrEmpty(ID))
             {
-                if (!string.IsNullOrEmpty(ID))
+                using (var con = API.Server.MSSQL.ReadyOnly())
                 {
-                    using (var con = API.Server.MSSQL.ReadyOnly())
-                    {
-                        con.Open();
-                        string str = $@"SELECT * FROM ...";
+                    con.Open();
+                    string str = $@"SELECT * FROM ...";
 
-                        var cmd = new SqlCommand(str, con);
-                        var reader = cmd.ExecuteReader();
-                        while (reader.Read())
-                        {
-                            return Reading(reader);
-                        }
+                    var cmd = new SqlCommand(str, con);
+                    var reader = cmd.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        return Reading(reader);
                     }
                 }
-                return null;
             }
-            catch (Exception ex)
-            {
-                APIExcepted(MethodBase.GetCurrentMethod(), ex);
-                return null;
-            }
+            return null;
         }
         /// <summary>
         /// 取得資訊

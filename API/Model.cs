@@ -1,6 +1,4 @@
-﻿using API.Struct;
-using System;
-using System.Reflection;
+﻿using static API.AttributeBox;
 
 namespace API
 {
@@ -41,11 +39,8 @@ namespace API
         public abstract T Find();
         #endregion 行為
     }
-}
 
-namespace API.Struct
-{
-    #region BaseModel/IBaseMethod
+
     /// <summary>
     /// 基礎模型，提供類別完整名稱的唯讀屬性。
     /// </summary>
@@ -55,22 +50,6 @@ namespace API.Struct
         /// 類型完整名稱
         /// </summary>
         public virtual string Class => GetType().FullName;
-
-        #region API 方法例外事件       
-        /// <summary>
-        /// API 例外事件。當方法發生例外時會被觸發。
-        /// </summary>
-        public static event APIMethodException APIException;
-        /// <summary>
-        /// 觸發 API 例外事件，統一回報例外狀況。
-        /// </summary>
-        /// <param name="MethodBase">發生例外的方法資訊</param>
-        /// <param name="ex">例外內容</param>
-        protected internal static void APIExcepted(MethodBase MethodBase, Exception ex)
-        {
-            APIException?.Invoke(MethodBase, ex);
-        }
-        #endregion API 方法例外事件
     }
 
     /// <summary>
@@ -85,12 +64,5 @@ namespace API.Struct
         /// <returns>指定型別的物件</returns>
         T Find();
     }
-    #endregion BaseModel/IBaseMethod
 
-    /// <summary>
-    /// 委派事件：用於 API 方法發生例外時的通知。
-    /// </summary>
-    /// <param name="MethodBase">例外發生的方法</param>
-    /// <param name="ex">例外內容</param>
-    public delegate void APIMethodException(MethodBase MethodBase, Exception ex);
 }

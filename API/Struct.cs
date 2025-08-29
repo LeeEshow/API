@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿using API.Struct;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
@@ -6,49 +8,13 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using static API.AttributeBox;
 
-namespace API.Struct
+namespace API
 {
-    #region 特性
+    #region 靜態擴充
     /// <summary>
-    /// JSON 序列化時隱藏空值屬性
-    /// </summary>
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
-    public class IgnoreNullsAttribute : Attribute
-    {
-    }
-    /// <summary>
-    /// 
-    /// </summary>
-    public class IgnoreNullsContractResolver : DefaultContractResolver
-    {
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="type"></param>
-        /// <param name="memberSerialization"></param>
-        /// <returns></returns>
-        protected override IList<JsonProperty> CreateProperties(System.Type type, MemberSerialization memberSerialization)
-        {
-            var props = base.CreateProperties(type, memberSerialization);
-
-            // 如果 Class/Struct 有 [IgnoreNulls] 特性
-            if (type.GetCustomAttribute<IgnoreNullsAttribute>() != null)
-            {
-                foreach (var prop in props)
-                {
-                    prop.NullValueHandling = NullValueHandling.Ignore;
-                    prop.DefaultValueHandling = DefaultValueHandling.Ignore;
-                }
-            }
-
-            return props;
-        }
-    }
-    #endregion 特性
-
-    /// <summary>
-    /// 全域靜態擴充
+    /// 靜態擴充
     /// </summary>
     public static class ExtensionMethods
     {
@@ -62,14 +28,17 @@ namespace API.Struct
         {
             var settings = new JsonSerializerSettings
             {
-                ContractResolver = new IgnoreNullsContractResolver(),
-                Formatting = Formatting.Indented
+                Formatting = Formatting.Indented,
+                Converters = { new StringEnumConverter() } // 列舉轉字串
             };
 
+            if (IgnoreNulls)
+            {
+                settings.ContractResolver = new IgnoreNullsContractResolver();
+                settings.NullValueHandling = NullValueHandling.Ignore;
+            }
 
-            return IgnoreNulls ?
-                JsonConvert.SerializeObject(obj, settings) :
-                JsonConvert.SerializeObject(obj);
+            return JsonConvert.SerializeObject(obj, settings);
         }
 
         /// <summary>
@@ -80,7 +49,12 @@ namespace API.Struct
         /// <returns></returns>
         public static T ToObject<T>(this string str)
         {
-            return JsonConvert.DeserializeObject<T>(str);
+            var settings = new JsonSerializerSettings
+            {
+                Converters = { new StringEnumConverter() }
+            };
+
+            return JsonConvert.DeserializeObject<T>(str, settings);
         }
 
         /// <summary>
@@ -151,7 +125,56 @@ namespace API.Struct
         }
 
     }
+    #endregion 靜態擴充
 
+    #region 特性
+    /// <summary>
+    /// 特性容器
+    /// </summary>
+    public class AttributeBox
+    {
+        /// <summary>
+        /// JSON 序列化時隱藏空值屬性
+        /// </summary>
+        [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
+        public class IgnoreNullsAttribute : Attribute
+        {
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        public class IgnoreNullsContractResolver : DefaultContractResolver
+        {
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="type"></param>
+            /// <param name="memberSerialization"></param>
+            /// <returns></returns>
+            protected override IList<JsonProperty> CreateProperties(System.Type type, MemberSerialization memberSerialization)
+            {
+                var props = base.CreateProperties(type, memberSerialization);
+
+                // 如果 Class/Struct 有 [IgnoreNulls] 特性
+                if (type.GetCustomAttribute<IgnoreNullsAttribute>() != null)
+                {
+                    foreach (var prop in props)
+                    {
+                        prop.NullValueHandling = NullValueHandling.Ignore;
+                        prop.DefaultValueHandling = DefaultValueHandling.Ignore;
+                    }
+                }
+
+                return props;
+            }
+        }
+    }
+    #endregion 特性
+}
+
+// 結構分支
+namespace API.Struct
+{
     /// <summary>
     /// 基礎類別結構
     /// </summary>

@@ -56,19 +56,11 @@ namespace API
             /// <returns></returns>
             internal static SqlConnection ReadyOnly()
             {
-                try
-                {
-                    return new SqlConnection($@"Data Source={_IP};
+                return new SqlConnection($@"Data Source={_IP};
                                             User ID={_ID};
                                             Password={_Password};
                                             Initial Catalog={_Schema};
                                             ApplicationIntent=ReadOnly");
-                }
-                catch (Exception ex)
-                {
-                    BaseModel.APIExcepted(MethodBase.GetCurrentMethod(), ex);
-                    return null;
-                }
             }
             /// <summary>
             /// 建立 SQL 操作連線(讀/寫)
@@ -76,18 +68,10 @@ namespace API
             /// <returns></returns>
             public static SqlConnection Connecting()
             {
-                try
-                {
-                    return new SqlConnection($@"Data Source={_IP};
+                return new SqlConnection($@"Data Source={_IP};
                                             User ID={_ID};
                                             Password={_Password};
                                             Initial Catalog={_Schema};");
-                }
-                catch (Exception ex)
-                {
-                    BaseModel.APIExcepted(MethodBase.GetCurrentMethod(), ex);
-                    return null;
-                }
             }
 
             /// <summary>
@@ -95,18 +79,10 @@ namespace API
             /// </summary>
             public static bool IsConnected()
             {
-                try
+                using (var con = ReadyOnly())
                 {
-                    using (var con = ReadyOnly())
-                    {
-                        con.Open();
-                        return true;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    BaseModel.APIExcepted(MethodBase.GetCurrentMethod(), ex);
-                    return false;
+                    con.Open();
+                    return true;
                 }
             }
             #endregion 行為
@@ -151,9 +127,7 @@ namespace API
             /// <returns></returns>
             public static MySqlConnection Connecting()
             {
-                try
-                {
-                    return new MySqlConnection($@"server={_IP};
+                return new MySqlConnection($@"server={_IP};
                                              user id={_ID};
                                              password={_Password};
                                              database={_Schema};
@@ -163,12 +137,6 @@ namespace API
                                              SslMode=none;
                                              Allow User Variables=True;
                                              Connect Timeout=180;");
-                }
-                catch (Exception ex)
-                {
-                    BaseModel.APIExcepted(MethodBase.GetCurrentMethod(), ex);
-                    return null;
-                }
             }
 
             /// <summary>
@@ -177,18 +145,10 @@ namespace API
             /// <returns></returns>
             public static bool IsConnected()
             {
-                try
+                using (var con = Connecting())
                 {
-                    using (var con = Connecting())
-                    {
-                        con.Open();
-                        return true;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    BaseModel.APIExcepted(MethodBase.GetCurrentMethod(), ex);
-                    return false;
+                    con.Open();
+                    return true;
                 }
             }
 
@@ -269,36 +229,28 @@ namespace API
             /// <returns></returns>
             public static WindowsImpersonationContext Connecting()
             {
-                try
+                #region LogonUser
+                IntPtr token = IntPtr.Zero;
+                bool isSuccess = LogonUser(_ID, _IP, _Password,
+                                    LOGON32_LOGON_NEW_CREDENTIALS,
+                                    LOGON32_PROVIDER_DEFAULT,
+                                    ref token);
+                if (!isSuccess)
                 {
-                    #region LogonUser
-                    IntPtr token = IntPtr.Zero;
-                    bool isSuccess = LogonUser(_ID, _IP, _Password,
-                                        LOGON32_LOGON_NEW_CREDENTIALS,
-                                        LOGON32_PROVIDER_DEFAULT,
-                                        ref token);
-                    if (!isSuccess)
-                    {
-                        throw new ApplicationException("Failed to LogonUser, Code = " + Marshal.GetLastWin32Error());
-                    }
-                    #endregion LogonUser
-
-                    #region DuplicateToken
-                    IntPtr dupToken = IntPtr.Zero;
-                    isSuccess = DuplicateToken(token, 2, ref dupToken);
-                    if (!isSuccess)
-                    {
-                        throw new ApplicationException("Failed to DuplicateToken, Code = " + Marshal.GetLastWin32Error());
-                    }
-                    #endregion DuplicateToken
-
-                    return new WindowsIdentity(dupToken).Impersonate();
+                    throw new ApplicationException("Failed to LogonUser, Code = " + Marshal.GetLastWin32Error());
                 }
-                catch (Exception ex)
+                #endregion LogonUser
+
+                #region DuplicateToken
+                IntPtr dupToken = IntPtr.Zero;
+                isSuccess = DuplicateToken(token, 2, ref dupToken);
+                if (!isSuccess)
                 {
-                    BaseModel.APIExcepted(MethodBase.GetCurrentMethod(), ex);
-                    return null;
+                    throw new ApplicationException("Failed to DuplicateToken, Code = " + Marshal.GetLastWin32Error());
                 }
+                #endregion DuplicateToken
+
+                return new WindowsIdentity(dupToken).Impersonate();
             }
 
             #region 使用範例
@@ -312,33 +264,25 @@ namespace API
             /// <returns></returns>
             public static bool Upload(Stream Stream, string Save_Path, FileMode FileMode)
             {
-                try
+                // Save_Path 必須包含 IP，例如：192.168.10.218/FileServer
+                if ((FileMode == FileMode.Create || FileMode == FileMode.CreateNew) & Save_Path.Contains(Def_Path))
                 {
-                    // Save_Path 必須包含 IP，例如：192.168.10.218/FileServer
-                    if ((FileMode == FileMode.Create || FileMode == FileMode.CreateNew) & Save_Path.Contains(Def_Path))
+                    using (var wic = Connecting())
                     {
-                        using (var wic = Connecting())
+                        using (var fileStream = new FileStream(Save_Path, FileMode, FileAccess.Write))
                         {
-                            using (var fileStream = new FileStream(Save_Path, FileMode, FileAccess.Write))
-                            {
-                                Stream.CopyTo(fileStream);
-                            }
-
-                            if (File.Exists(Save_Path))
-                            {
-                                wic.Undo();
-                                return true;
-                            }
-                            wic.Undo();
+                            Stream.CopyTo(fileStream);
                         }
+
+                        if (File.Exists(Save_Path))
+                        {
+                            wic.Undo();
+                            return true;
+                        }
+                        wic.Undo();
                     }
-                    return false;
                 }
-                catch (Exception ex)
-                {
-                    BaseModel.APIExcepted(MethodBase.GetCurrentMethod(), ex);
-                    return false;
-                }
+                return false;
             }
 
             /// <summary>
@@ -348,24 +292,16 @@ namespace API
             /// <returns></returns>
             public static Stream Download(string File_Path)
             {
-                try
+                if (File_Path.Contains(Def_Path))
                 {
-                    if (File_Path.Contains(Def_Path))
+                    using (var wic = Connecting())
                     {
-                        using (var wic = Connecting())
-                        {
-                            var data = File.OpenRead(File_Path);
-                            wic.Undo();
-                            return data;
-                        }
+                        var data = File.OpenRead(File_Path);
+                        wic.Undo();
+                        return data;
                     }
-                    return null;
                 }
-                catch (Exception ex)
-                {
-                    BaseModel.APIExcepted(MethodBase.GetCurrentMethod(), ex);
-                    return null;
-                }
+                return null;
             }
             #endregion 使用範例
 
