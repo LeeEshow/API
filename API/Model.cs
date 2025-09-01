@@ -7,22 +7,13 @@ namespace API
     /// 提供所有物件的基本結構與共用方法，並透過泛型確保子類別回傳正確型別。
     /// </summary>
     /// <typeparam name="T">子類別型別，必須繼承 <see cref="Model{T}"/>，且具備無參數建構子</typeparam>
-    [IgnoreNulls]
     public abstract class Model<T> : BaseModel, IBaseMethod<T> where T : Model<T>, new()
     {
         #region 屬性
         /// <summary>
-        /// 物件識別碼
-        /// </summary>
-        public virtual string ID { get; set; }
-        /// <summary>
-        /// 物件名稱
-        /// </summary>
-        public virtual string Name { get; set; }
-        /// <summary>
         /// 物件類別，抽象屬性繼承時必須實作。
         /// </summary>
-        public abstract object Type { get; set; }
+        public virtual object Type { get; set; }
 
         /// <summary>
         /// 類型完整名稱，唯獨。
@@ -42,14 +33,23 @@ namespace API
 
 
     /// <summary>
-    /// 基礎模型，提供類別完整名稱的唯讀屬性。
+    /// 抽象模型。
     /// </summary>
-    public class BaseModel
+    [IgnoreNulls]
+    public abstract class BaseModel
     {
         /// <summary>
-        /// 類型完整名稱
+        /// 物件識別碼
         /// </summary>
-        public virtual string Class => GetType().FullName;
+        public abstract string ID { get; set; }
+        /// <summary>
+        /// 物件名稱
+        /// </summary>
+        public abstract string Name { get; set; }
+        /// <summary>
+        /// 類型名稱
+        /// </summary>
+        public virtual string Class { get; set; }
     }
 
     /// <summary>

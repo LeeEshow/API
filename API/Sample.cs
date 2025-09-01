@@ -1,4 +1,5 @@
-﻿using System;
+﻿using API.Struct;
+using System;
 using System.Data.SqlClient;
 using System.Reflection;
 
@@ -21,7 +22,7 @@ namespace API.Model
         /// <summary>
         /// 類別
         /// </summary>
-        public override object Type { get; set; } = null;
+        public new API.Struct.Type Type { get; set; }
 
         /// <summary>
         /// ???
@@ -122,5 +123,4 @@ namespace API.Model
 
         #endregion 行為
     }
-
 }

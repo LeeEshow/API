@@ -178,16 +178,22 @@ namespace API.Struct
     /// <summary>
     /// 基礎類別結構
     /// </summary>
-    [IgnoreNulls]
-    public struct Type
+    public sealed class Type : BaseModel
     {
-        public int ID;
-
-        public string No;
-
-        public string Name;
-
+        /// <summary>
+        /// 類別 ID
+        /// </summary>
+        public override string ID { get; set; }
+        /// <summary>
+        /// 類別名稱
+        /// </summary>
+        public override string Name { get; set; }
+        /// <summary>
+        /// 備註資訊
+        /// </summary>
         public string Remark;
+
+        public override sealed string Class => null;
     }
 
 
