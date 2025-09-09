@@ -7,7 +7,7 @@ namespace API
     /// 提供所有物件的基本結構與共用方法，並透過泛型確保子類別回傳正確型別。
     /// </summary>
     /// <typeparam name="T">子類別型別，必須繼承 <see cref="Model{T}"/>，且具備無參數建構子</typeparam>
-    public abstract class Model<T> : BaseModel, IBaseMethod<T> where T : Model<T>, new()
+    public abstract class Model<T> : BaseModel, IModel where T : Model<T>, new()
     {
         #region 屬性
         /// <summary>
@@ -28,6 +28,10 @@ namespace API
         /// </summary>
         /// <returns>回傳子類別物件</returns>
         public abstract T Find();
+        object IModel.Find()
+        {
+            return this.Find(); // 將泛型結果包裝成 object
+        }
         #endregion 行為
     }
 
@@ -55,14 +59,17 @@ namespace API
     /// <summary>
     /// 定義基本方法介面。
     /// </summary>
-    /// <typeparam name="T">回傳的型別</typeparam>
-    public interface IBaseMethod<T>
+    public interface IModel
     {
+        string ID { get; set; }
+        string Name { get; set; }
+        string Class { get; set; }
+
         /// <summary>
         /// 查詢或建立物件的方法。
         /// </summary>
         /// <returns>指定型別的物件</returns>
-        T Find();
+        object Find();
     }
 
 }
